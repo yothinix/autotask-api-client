@@ -5,11 +5,21 @@ verify_ssl = true
 name = "pypi"
 
 
+[scripts]
+
+hello = "python main.py"
+
+
 [dev-packages]
 
+neovim = "*"
+ipdb = "*"
 
 
 [packages]
 
 requests = "*"
 ipython = "*"
+django = "*"
+xmltodict = "*"
+toolz = "*"
