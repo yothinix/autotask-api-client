@@ -14,15 +14,12 @@ def get_xml_field_value(field_name, data):
     return get_in(entity_path + [field_name, '#text'], data)
 
 
-def main():
+def query_ticket(filter_field, filter_value):
     with open('query_ticket.xml', 'r') as xml_file:
         xml_template = xml_file.read()
 
     url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
-    data = xml_template.format(
-        filter_field='ticketnumber',
-        ticket_number='T20180220.0001'
-    )
+    data = xml_template.format(filter_field=filter_field, filter_value=filter_value)
     headers = {'Content-Type': 'text/xml'}
     auth = HTTPBasicAuth(
         os.environ.get('AUTOTASK_USERNAME'),
@@ -40,4 +37,4 @@ def main():
     print(ticket)
     return ticket
 
-main()
+query_ticket(filter_field='ticketnumber', filter_value='T20180220.0001')

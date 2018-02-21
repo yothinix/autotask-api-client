@@ -10,7 +10,7 @@
                     <entity>Ticket</entity>
                     <query>
                         <field>{filter_field}
-                            <expression op="equals">{ticket_number}</expression>
+                            <expression op="equals">{filter_value}</expression>
                         </field>
                     </query>
                 </queryxml>]]>
