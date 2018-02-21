@@ -15,28 +15,8 @@ def get_xml_field_value(field_name, data):
 
 
 def main():
-    xml = """
-<env:Envelope
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:tns="http://autotask.net/ATWS/v1_5/"
-    xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-    <env:Body>
-        <tns:query xmlns="http://autotask.net/ATWS/v1_5/">
-            <sXML>
-                <![CDATA[<queryxml>
-                    <entity>Ticket</entity>
-                    <query>
-                        <field>{filter_field}
-                            <expression op="equals">{ticket_number}</expression>
-                        </field>
-                    </query>
-                </queryxml>]]>
-            </sXML>
-        </tns:query>
-    </env:Body>
-</env:Envelope>
-"""
+    with open('query_ticket.xml', 'r') as xml_file:
+        xml = xml_file.read()
 
     auth = HTTPBasicAuth(
         os.environ.get('AUTOTASK_USERNAME'),
