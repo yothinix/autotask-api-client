@@ -51,3 +51,13 @@ query(
         'TicketNumber', 'Title', 'Description', 'AssignedResourceID'
     )
 )
+
+query(
+    entity='Resource',
+    filter_field='id',
+    filter_value='29682885',
+    select_fields=(
+        'id', 'Email', 'FirstName', 'LastName',
+        'ResourceType', 'Title', 'UserName'
+    )
+)
