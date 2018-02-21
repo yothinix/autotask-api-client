@@ -7,7 +7,8 @@ from toolz import get_in
 
 
 def get_xml_field_value(field_name, data):
-    entity_path = ['soap:Envelope', 'soap:Body', 'queryResponse', 'queryResult', 'EntityResults', 'Entity']
+    entity_path = ['soap:Envelope', 'soap:Body', 'queryResponse',
+                   'queryResult', 'EntityResults', 'Entity']
     if field_name == 'id':
         return get_in(entity_path + [field_name], data)
 
@@ -19,7 +20,10 @@ def query_ticket(filter_field, filter_value):
         xml_template = xml_file.read()
 
     url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
-    data = xml_template.format(filter_field=filter_field, filter_value=filter_value)
+    data = xml_template.format(
+        filter_field=filter_field,
+        filter_value=filter_value
+    )
     headers = {'Content-Type': 'text/xml'}
     auth = HTTPBasicAuth(
         os.environ.get('AUTOTASK_USERNAME'),
@@ -30,11 +34,12 @@ def query_ticket(filter_field, filter_value):
     data = xmltodict.parse(res.text)
 
     ticket = {}
-    for key in ('AccountID', 'CreateDate', 'DueDateTime', 'TicketNumber', 'Title', 'Description', 'AssignedResourceID'):
+    for key in ('id', 'AccountID', 'CreateDate', 'DueDateTime', 'TicketNumber',
+                'Title', 'Description', 'AssignedResourceID'):
         ticket[key] = get_xml_field_value(key, data)
-
 
     print(ticket)
     return ticket
+
 
 query_ticket(filter_field='ticketnumber', filter_value='T20180220.0001')
