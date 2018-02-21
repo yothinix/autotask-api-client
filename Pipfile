@@ -7,7 +7,7 @@ name = "pypi"
 
 [scripts]
 
-hello = "python main.py"
+main = "python main.py"
 
 
 [dev-packages]

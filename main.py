@@ -14,7 +14,7 @@ def get_xml_field_value(field_name, data):
     return get_in(entity_path + [field_name, '#text'], data)
 
 
-def hello():
+def main():
     xml = """
 <env:Envelope
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -62,4 +62,4 @@ def hello():
     print('hello world')
 
 
-hello()
+main()
