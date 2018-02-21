@@ -7,7 +7,7 @@
         <tns:query xmlns="http://autotask.net/ATWS/v1_5/">
             <sXML>
                 <![CDATA[<queryxml>
-                    <entity>Ticket</entity>
+                  <entity>{entity}</entity>
                     <query>
                         <field>{filter_field}
                             <expression op="equals">{filter_value}</expression>

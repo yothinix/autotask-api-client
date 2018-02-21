@@ -15,12 +15,13 @@ def get_xml_field_value(field_name, data):
     return get_in(entity_path + [field_name, '#text'], data)
 
 
-def query_ticket(filter_field, filter_value):
-    with open('query_ticket.xml', 'r') as xml_file:
+def query(entity, filter_field, filter_value):
+    with open('templates/query.xml', 'r') as xml_file:
         xml_template = xml_file.read()
 
     url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
     data = xml_template.format(
+        entity=entity,
         filter_field=filter_field,
         filter_value=filter_value
     )
@@ -42,4 +43,8 @@ def query_ticket(filter_field, filter_value):
     return ticket
 
 
-query_ticket(filter_field='ticketnumber', filter_value='T20180220.0001')
+query(
+    entity='Ticket',
+    filter_field='ticketnumber',
+    filter_value='T20180220.0001'
+)
