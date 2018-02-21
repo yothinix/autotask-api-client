@@ -15,7 +15,7 @@ def get_xml_field_value(field_name, data):
     return get_in(entity_path + [field_name, '#text'], data)
 
 
-def query(entity, filter_field, filter_value):
+def query(entity, filter_field, filter_value, select_fields):
     with open('templates/query.xml', 'r') as xml_file:
         xml_template = xml_file.read()
 
@@ -34,17 +34,20 @@ def query(entity, filter_field, filter_value):
     res = requests.post(url, data, headers=headers, auth=auth)
     data = xmltodict.parse(res.text)
 
-    ticket = {}
-    for key in ('id', 'AccountID', 'CreateDate', 'DueDateTime', 'TicketNumber',
-                'Title', 'Description', 'AssignedResourceID'):
-        ticket[key] = get_xml_field_value(key, data)
+    entity = {}
+    for key in select_fields:
+        entity[key] = get_xml_field_value(key, data)
 
-    print(ticket)
-    return ticket
+    print(entity)
+    return entity
 
 
 query(
     entity='Ticket',
     filter_field='ticketnumber',
-    filter_value='T20180220.0001'
+    filter_value='T20180220.0001',
+    select_fields=(
+        'id', 'AccountID', 'CreateDate', 'DueDateTime',
+        'TicketNumber', 'Title', 'Description', 'AssignedResourceID'
+    )
 )
