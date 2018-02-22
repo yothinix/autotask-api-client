@@ -86,6 +86,30 @@ ticket_note = client.create(
 )
 ```
 
+The wrapper is equivalent to this XML body
+```xml
+<?xml version="1.0" encoding="utf-16"?>
+<soap:Envelope
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<create
+			xmlns="http://autotask.net/ATWS/v1_5/">
+			<Entities>
+				<Entity xsi:type="TicketNote">
+					<Description>Comment: "Great service as always! !!!"</Description>
+					<NoteType>1</NoteType>
+					<Publish>1</Publish>
+					<TicketID>7872</TicketID>
+					<Title>Good rating from Cory Black</Title>
+				</Entity>
+			</Entities>
+		</create>
+	</soap:Body>
+</soap:Envelope>
+```
+
 ### Update User-Defined Fields on Ticket Entity
 To update User-Defined Fields, You need to specify target Entity and lookup_keys in dictionary format. Then, you need to specified User-Defined Fields Name and value. Lastly, You also need to specify a list of return field otherwise it will return `None`
 ```python
@@ -117,6 +141,42 @@ update_ticket_satisfaction = client.update_udf(
 )
 ```
 
+The wrapper is equivalent to this XML body
+```xml
+<?xml version="1.0" encoding="utf-16"?>
+<soap:Envelope
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <update xmlns="http://autotask.net/ATWS/v1_5/">
+      <Entities>
+        <Entity xsi:type="Ticket">
+          <id>7872</id>
+          <Title>This is Man test ticket</Title>
+          <Status>1</Status>
+          <Priority>1</Priority>
+          <DueDateTime>2018-02-21T01:38:00</DueDateTime>
+          <AccountID>0</AccountID>
+          <AssignedResourceID xsi:type="xsd:int">29682885</AssignedResourceID>
+          <AssignedResourceRoleID xsi:type="xsd:int">29683436</AssignedResourceRoleID>
+
+					<UserDefinedFields>
+					  <UserDefinedField>
+					    <Name>Satisfaction</Name>
+					    <Value>3</Value>
+					  </UserDefinedField>
+					</UserDefinedFields>
+
+        </Entity>
+      </Entities>
+    </update>
+  </soap:Body>
+</soap:Envelope>
+```
+
+
+## Development
 * To execute the test, running
 ```
 pipenv run test
