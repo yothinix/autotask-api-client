@@ -11,6 +11,11 @@ ticket = query(
     )
 )
 
+print('This is TICKET instance')
+print('-----------------------')
+print(ticket)
+print('-----------------------')
+
 
 resource = query(
     entity='Resource',
@@ -22,23 +27,28 @@ resource = query(
     )
 )
 
-ticket_note = create(
-    entity='TicketNote',
-    update_object={
-        'Description': 'Comment: "Great service as always!"',
-        'NoteType': '1',
-        'Publish': '1',
-        'ticketID': '7872',
-        'Title': 'Good rating from Cory Black'
-    }
-)
-
-
-print('This is TICKET instance')
-print('-----------------------')
-print(ticket)
-print('-----------------------')
 print('This is RESOURCE instance')
 print('-----------------------')
 print(resource)
+print('-----------------------')
+
+
+ticket_note = create(
+    entity='TicketNote',
+    update_object={
+        'Description': 'Comment: "Great service as always! !!!!"',
+        'NoteType': '1',
+        'Publish': '1',
+        'TicketID': '7872',
+        'Title': 'Good rating from Cory Black'
+    },
+    select_fields=(
+        'id', 'CreatorResourceID', 'Description', 'LastActivityDate',
+        'NoteType', 'Publish', 'TicketID', 'Title'
+    )
+)
+
+print('This is TICKET NOTE instance')
+print('-----------------------')
+print(ticket_note)
 print('-----------------------')
