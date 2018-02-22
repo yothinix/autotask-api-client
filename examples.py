@@ -1,7 +1,13 @@
-from autotask import query, create
+import os
+
+from autotask import Autotask
 
 
-ticket = query(
+client = Autotask()
+client.username = os.environ.get('AUTOTASK_USERNAME')
+client.password = os.environ.get('AUTOTASK_PASSWORD')
+
+ticket = client.query(
     entity='Ticket',
     filter_field='ticketnumber',
     filter_value='T20180220.0001',
@@ -17,7 +23,7 @@ print(ticket)
 print('-----------------------')
 
 
-resource = query(
+resource = client.query(
     entity='Resource',
     filter_field='id',
     filter_value='29682885',
@@ -33,7 +39,7 @@ print(resource)
 print('-----------------------')
 
 
-ticket_note = create(
+ticket_note = client.create(
     entity='TicketNote',
     update_object={
         'Description': 'Comment: "Great service as always! !!!!"',

@@ -6,75 +6,83 @@ from requests.auth import HTTPBasicAuth
 from toolz import get_in
 
 
-def get_xml_field_value(field_name, data, mode='query'):
-    entity_path = ['soap:Envelope', 'soap:Body', f'{mode}Response',
-                   f'{mode}Result', 'EntityResults', 'Entity']
-    if field_name == 'id':
-        return get_in(entity_path + [field_name], data)
 
-    return get_in(entity_path + [field_name, '#text'], data)
+class Autotask():
+    username = ''
+    password = ''
 
+    @staticmethod
+    def get_xml_field_value(field_name, data, mode='query'):
+        entity_path = [
+            'soap:Envelope',
+            'soap:Body',
+            f'{mode}Response',
+            f'{mode}Result',
+            'EntityResults',
+            'Entity'
+        ]
+        if field_name == 'id':
+            return get_in(entity_path + [field_name], data)
 
-def query(entity, filter_field, filter_value, select_fields):
-    with open('templates/query.xml', 'r') as xml_file:
-        xml_template = xml_file.read()
-
-    url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
-    data = xml_template.format(
-        entity=entity,
-        filter_field=filter_field,
-        filter_value=filter_value
-    )
-    headers = {'Content-Type': 'text/xml'}
-    auth = HTTPBasicAuth(
-        os.environ.get('AUTOTASK_USERNAME'),
-        os.environ.get('AUTOTASK_PASSWORD')
-    )
-
-    res = requests.post(url, data, headers=headers, auth=auth)
-    response_body = xmltodict.parse(res.text)
-
-    entity = {}
-    for key in select_fields:
-        entity[key] = get_xml_field_value(key, response_body, mode='query')
-
-    return entity
+        return get_in(entity_path + [field_name, '#text'], data)
 
 
-def create(entity, update_object, select_fields = []):
-    url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
+    def _request(self, data):
+        url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
+        headers = {'Content-Type': 'text/xml'}
+        auth = HTTPBasicAuth(self.username, self.password)
 
-    create_procedure = {
-        'soap:Envelope': {
-            '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-            '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-            '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-            'soap:Body': {
-                'create': {
-                    '@xmlns': 'http://autotask.net/ATWS/v1_5/',
-                    'Entities': {
-                        'Entity': {
-                            '@xsi:type': entity,
-                            **update_object
+        res = requests.post(url, data, headers=headers, auth=auth)
+
+        return xmltodict.parse(res.text)
+
+    def extract_response_from_keys(self, response_body, select_fields, mode):
+        entity = {}
+        for key in select_fields:
+            entity[key] = self.get_xml_field_value(key, response_body, mode)
+        return entity
+
+    def query(self, entity, filter_field, filter_value, select_fields=[]):
+        with open('templates/query.xml', 'r') as xml_file:
+            xml_template = xml_file.read()
+
+        data = xml_template.format(
+            entity=entity,
+            filter_field=filter_field,
+            filter_value=filter_value
+        )
+
+        response_body = self._request(data)
+
+        entity = self.extract_response_from_keys(
+            response_body, select_fields, mode='query'
+        )
+        return entity
+
+    def create(self, entity, update_object, select_fields=[]):
+        create_procedure = {
+            'soap:Envelope': {
+                '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
+                '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+                'soap:Body': {
+                    'create': {
+                        '@xmlns': 'http://autotask.net/ATWS/v1_5/',
+                        'Entities': {
+                            'Entity': {
+                                '@xsi:type': entity,
+                                **update_object
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    data = xmltodict.unparse(create_procedure)
+        data = xmltodict.unparse(create_procedure)
 
-    headers = {'Content-Type': 'text/xml'}
-    auth = HTTPBasicAuth(
-        os.environ.get('AUTOTASK_USERNAME'),
-        os.environ.get('AUTOTASK_PASSWORD')
-    )
+        response_body = self._request(data)
 
-    res = requests.post(url, data, headers=headers, auth=auth)
-    response_body = xmltodict.parse(res.text)
-
-    entity = {}
-    for key in select_fields:
-        entity[key] = get_xml_field_value(key, response_body, mode='create')
-
-    return entity
+        entity = self.extract_response_from_keys(
+            response_body, select_fields, mode='create'
+        )
+        return entity
