@@ -4,7 +4,6 @@ from requests.auth import HTTPBasicAuth
 from toolz import get_in
 
 
-
 class Autotask():
     username = ''
     password = ''
@@ -23,7 +22,6 @@ class Autotask():
             return get_in(entity_path + [field_name], data)
 
         return get_in(entity_path + [field_name, '#text'], data)
-
 
     def _request(self, data):
         url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
