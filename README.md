@@ -13,6 +13,7 @@ AUTOTASK_PASSWORD=password
 
 ## Making Request
 ### Making Query
+To query you need to specify Entity you want to query, A field for filter and it's value. You also need to specify a list of return field otherwise it will return `None`
 ```python
 from autotask import Autotask
 
@@ -21,7 +22,6 @@ client = Autotask()
 client.username = '<username>'
 client.password = '<password>'
 
-# Query Ticket by Ticket Number
 ticket = client.query(
     entity='Ticket',
     filter_field='ticketnumber',
@@ -31,20 +31,37 @@ ticket = client.query(
         'TicketNumber', 'Title', 'Description', 'AssignedResourceID'
     )
 )
-
-# Query Resource by ID
-resource = client.query(
-    entity='Resource',
-    filter_field='id',
-    filter_value='29682885',
-    select_fields=(
-        'id', 'Email', 'FirstName', 'LastName',
-        'ResourceType', 'Title', 'UserName'
-    )
-)
 ```
 
+The wrapper is equivalent to this XML body
+```xml
+<env:Envelope
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tns="http://autotask.net/ATWS/v1_5/"
+	xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+	<env:Body>
+		<tns:query
+			xmlns="http://autotask.net/ATWS/v1_5/">
+			<sXML>
+				<![CDATA[
+          <queryxml>
+            <entity>Ticket</entity>
+            <query>
+              <field>ticketnumber
+                <expression op="equals">T20180220.0001</expression>
+              </field>
+            </query>
+          </queryxml>]]>
+			</sXML>
+		</tns:query>
+	</env:Body>
+</env:Envelope>
+```
+
+
 ### Create Ticket Note
+To create entity you need to specify Entity you want to create, A dictionary of update object. You also need to specify a list of return field otherwise it will return `None`
 ```python
 from autotask import Autotask
 
@@ -70,6 +87,7 @@ ticket_note = client.create(
 ```
 
 ### Update User-Defined Fields on Ticket Entity
+To update User-Defined Fields, You need to specify target Entity and lookup_keys in dictionary format. Then, you need to specified User-Defined Fields Name and value. Lastly, You also need to specify a list of return field otherwise it will return `None`
 ```python
 from autotask import Autotask
 
