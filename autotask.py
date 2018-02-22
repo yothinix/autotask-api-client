@@ -38,7 +38,7 @@ class Autotask():
             entity[key] = self.get_xml_field_value(key, response_body, mode)
         return entity
 
-    def query(self, entity, filter_field, filter_value, select_fields=[]):
+    def query(self, entity, filter_field, filter_value, select_fields=()):
         with open('templates/query.xml', 'r') as xml_file:
             xml_template = xml_file.read()
 
@@ -55,7 +55,7 @@ class Autotask():
         )
         return entity
 
-    def create(self, entity, update_object, select_fields=[]):
+    def create(self, entity, update_object, select_fields=()):
         create_procedure = {
             'soap:Envelope': {
                 '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -80,5 +80,39 @@ class Autotask():
 
         entity = self.extract_response_from_keys(
             response_body, select_fields, mode='create'
+        )
+        return entity
+
+    def update(self, entity, lookup_keys, field, value, select_fields=()):
+        create_procedure = {
+            'soap:Envelope': {
+                '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
+                '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+                'soap:Body': {
+                    'update': {
+                        '@xmlns': 'http://autotask.net/ATWS/v1_5/',
+                        'Entities': {
+                            'Entity': {
+                                '@xsi:type': entity,
+                                **lookup_keys,
+                                'UserDefinedFields': {
+                                    'UserDefinedField': {
+                                        'Name': field,
+                                        'Value': value
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        data = xmltodict.unparse(create_procedure)
+
+        response_body = self._request(data)
+
+        entity = self.extract_response_from_keys(
+            response_body, select_fields, mode='update'
         )
         return entity

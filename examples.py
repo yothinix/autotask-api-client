@@ -58,3 +58,30 @@ print('This is TICKET NOTE instance')
 print('-----------------------')
 print(ticket_note)
 print('-----------------------')
+
+
+update_ticket_satisfaction = client.update(
+    entity='Ticket',
+    lookup_keys={
+        'id': '7872',
+        'Title': 'This is Man test ticket',
+        'Status': '1',
+        'Priority': '1',
+        'DueDateTime': '2018-02-21T01:38:00',
+        'AccountID': '0',
+        'AssignedResourceID': '29682885',
+        'AssignedResourceRoleID': '29683436'
+    },
+    field='Satisfaction',
+    value='1',
+    select_fields=(
+        'id', 'AccountID', 'CreateDate', 'DueDateTime',
+        'TicketNumber', 'Title', 'Description', 'AssignedResourceID'
+    )
+)
+
+
+print('This is TICKET instance')
+print('-----------------------')
+print(update_ticket_satisfaction)
+print('-----------------------')
