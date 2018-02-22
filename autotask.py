@@ -87,7 +87,7 @@ class Autotask():
         )
         return entity
 
-    def update(self, entity, lookup_keys, field, value, select_fields=()):
+    def update_udf(self, entity, lookup_keys, field, value, select_fields=()):
         procedure = {
             'update': {
                 '@xmlns': 'http://autotask.net/ATWS/v1_5/',

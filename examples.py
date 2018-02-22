@@ -60,7 +60,7 @@ print(ticket_note)
 print('-----------------------')
 
 
-update_ticket_satisfaction = client.update(
+update_ticket_satisfaction = client.update_udf(
     entity='Ticket',
     lookup_keys={
         'id': '7872',
