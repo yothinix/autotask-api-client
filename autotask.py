@@ -7,6 +7,14 @@ from toolz import get_in
 class Autotask():
     username = ''
     password = ''
+    base_xml_template = {
+        'soap:Envelope': {
+            '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+            '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
+            '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+            'soap:Body': {}
+        }
+    }
 
     @staticmethod
     def get_xml_field_value(field_name, data, mode='query'):
@@ -56,24 +64,21 @@ class Autotask():
         return entity
 
     def create(self, entity, update_object, select_fields=()):
-        create_procedure = {
-            'soap:Envelope': {
-                '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-                '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-                '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-                'soap:Body': {
-                    'create': {
-                        '@xmlns': 'http://autotask.net/ATWS/v1_5/',
-                        'Entities': {
-                            'Entity': {
-                                '@xsi:type': entity,
-                                **update_object
-                            }
-                        }
+        procedure = {
+            'create': {
+                '@xmlns': 'http://autotask.net/ATWS/v1_5/',
+                'Entities': {
+                    'Entity': {
+                        '@xsi:type': entity,
+                        **update_object
                     }
                 }
             }
         }
+
+        create_procedure = self.base_xml_template.copy()
+        create_procedure['soap:Envelope']['soap:Body'] = procedure
+
         data = xmltodict.unparse(create_procedure)
 
         response_body = self._request(data)
@@ -84,30 +89,27 @@ class Autotask():
         return entity
 
     def update(self, entity, lookup_keys, field, value, select_fields=()):
-        create_procedure = {
-            'soap:Envelope': {
-                '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-                '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-                '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-                'soap:Body': {
-                    'update': {
-                        '@xmlns': 'http://autotask.net/ATWS/v1_5/',
-                        'Entities': {
-                            'Entity': {
-                                '@xsi:type': entity,
-                                **lookup_keys,
-                                'UserDefinedFields': {
-                                    'UserDefinedField': {
-                                        'Name': field,
-                                        'Value': value
-                                    }
-                                }
+        procedure = {
+            'update': {
+                '@xmlns': 'http://autotask.net/ATWS/v1_5/',
+                'Entities': {
+                    'Entity': {
+                        '@xsi:type': entity,
+                        **lookup_keys,
+                        'UserDefinedFields': {
+                            'UserDefinedField': {
+                                'Name': field,
+                                'Value': value
                             }
                         }
                     }
                 }
             }
         }
+
+        create_procedure = self.base_xml_template.copy()
+        create_procedure['soap:Envelope']['soap:Body'] = procedure
+
         data = xmltodict.unparse(create_procedure)
 
         response_body = self._request(data)
