@@ -5,6 +5,8 @@ from toolz import get_in
 
 
 class Autotask():
+    url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
+    headers = {'Content-Type': 'text/xml'}
     username = ''
     password = ''
     base_xml_template = {
@@ -32,11 +34,8 @@ class Autotask():
         return get_in(entity_path + [field_name, '#text'], data)
 
     def _request(self, data):
-        url = 'https://webservices2.autotask.net/atservices/1.5/atws.asmx'
-        headers = {'Content-Type': 'text/xml'}
         auth = HTTPBasicAuth(self.username, self.password)
-
-        res = requests.post(url, data, headers=headers, auth=auth)
+        res = requests.post(self.url, data, headers=self.headers, auth=auth)
 
         return xmltodict.parse(res.text)
 
