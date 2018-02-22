@@ -1,5 +1,3 @@
-import os
-
 import requests
 import xmltodict
 from requests.auth import HTTPBasicAuth
