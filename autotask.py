@@ -117,3 +117,27 @@ class Autotask():
             response_body, select_fields, mode='update'
         )
         return entity
+
+    def get_zone_info(self):
+        procedure = {
+            'getZoneInfo': {
+                '@xmlns': 'http://autotask.net/ATWS/v1_5/',
+                'UserName': self.username
+            }
+        }
+
+        base_procedure = self.base_xml_template.copy()
+        base_procedure['soap:Envelope']['soap:Body'] = procedure
+
+        data = xmltodict.unparse(base_procedure)
+
+        response_body = self._request(data)
+
+        keys = [
+            'soap:Envelope',
+            'soap:Body',
+            'getZoneInfoResponse',
+            'getZoneInfoResult'
+        ]
+        entity = get_in(keys, response_body)
+        return entity

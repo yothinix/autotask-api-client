@@ -175,6 +175,35 @@ The wrapper is equivalent to this XML body
 </soap:Envelope>
 ```
 
+### Get Zone Info
+```python
+from autotask import Autotask
+
+
+client = Autotask()
+client.username = '<username>'
+client.password = '<password>'
+
+
+get_zone_info = client.get_zone_info()
+```
+
+The wrapper is equivalent to this XML body
+```xml
+<env:Envelope
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tns="http://autotask.net/ATWS/v1_5/"
+	xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+	<env:Body>
+    <getZoneInfo xmlns="http://autotask.net/ATWS/v1_5/">
+      <UserName>Username</UserName>
+    </getZoneInfo>
+	</env:Body>
+</env:Envelope>
+```
+
+
 
 ## Development
 * To execute the test, running
