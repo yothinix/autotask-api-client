@@ -13,7 +13,7 @@ python_version = "3.6"
 [scripts]
 
 lint = "flake8"
-test = "python examples.py"
+test = "pytest"
 
 
 [dev-packages]
@@ -28,6 +28,5 @@ pytest = "*"
 
 requests = "*"
 ipython = "*"
-django = "*"
 xmltodict = "*"
 toolz = "*"
