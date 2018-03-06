@@ -22,7 +22,7 @@ client = Autotask()
 client.username = '<username>'
 client.password = '<password>'
 
-ticket = client.query(
+ticket, status_code = client.query(
     entity='Ticket',
     filter_field='ticketnumber',
     filter_value='T20180220.0001',
@@ -70,7 +70,7 @@ client = Autotask()
 client.username = '<username>'
 client.password = '<password>'
 
-ticket_note = client.create(
+ticket_note, status_code = client.create(
     entity='TicketNote',
     update_object={
         'Description': 'Comment: "Great service as always!"'
@@ -120,7 +120,7 @@ client = Autotask()
 client.username = '<username>'
 client.password = '<password>'
 
-update_ticket_satisfaction = client.update_udf(
+update_ticket_satisfaction, status_code = client.update_udf(
     entity='Ticket',
     lookup_keys={
         'id': '7872',
@@ -210,4 +210,3 @@ The wrapper is equivalent to this XML body
 ```
 pipenv run test
 ```
-

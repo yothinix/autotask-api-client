@@ -2,12 +2,9 @@ import os
 from collections import OrderedDict
 from typing import Tuple, Union, Dict
 
-from django.conf import settings
-
 import requests
 import xmltodict
 from requests.auth import HTTPBasicAuth
-from rest_framework import status
 from toolz import get_in
 
 
@@ -24,15 +21,19 @@ class Autotask():
     headers = {'Content-Type': 'text/xml'}
     username = ''
     password = ''
+    integration_code = ''
+    integration_headers = {
+        'soap:Header': {
+            'IntegrationCode': integration_code
+        }
+    }
     base_xml_template = {
         'soap:Envelope': {
             '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
             '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
             '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-            'soap:Header': {
-                'IntegrationCode': settings.SIMPLESAT_AUTOTASK_INTEGRATION_CODE
-            },
-            'soap:Body': {}
+            'soap:Body': {},
+            **integration_headers
         }
     }
 
@@ -90,7 +91,7 @@ class Autotask():
 
         status_code, body = self._request(data)
 
-        if status_code != status.HTTP_200_OK:
+        if status_code != 200:
             return body, status_code
 
         entity = self.extract_response_from_keys(
@@ -127,7 +128,7 @@ class Autotask():
 
         status_code, body = self._request(data)
 
-        if status_code != status.HTTP_200_OK:
+        if status_code != 200:
             return body, status_code
 
         entity = self.extract_response_from_keys(
@@ -171,7 +172,7 @@ class Autotask():
 
         status_code, body = self._request(data)
 
-        if status_code != status.HTTP_200_OK:
+        if status_code != 200:
             return body, status_code
 
         entity = self.extract_response_from_keys(
@@ -197,7 +198,7 @@ class Autotask():
 
         status_code, body = self._request(data)
 
-        if status_code != status.HTTP_200_OK:
+        if status_code != 200:
             return body, status_code
 
         keys = [
