@@ -21,6 +21,7 @@ test = "python examples.py"
 neovim = "*"
 ipdb = "*"
 "flake8" = "*"
+pytest = "*"
 
 
 [packages]

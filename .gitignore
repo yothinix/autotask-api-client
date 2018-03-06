@@ -1,2 +1,5 @@
 .env
+.cache
+.pytest_cache
 __pycache__/
+xterm-256color.ti

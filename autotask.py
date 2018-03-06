@@ -32,8 +32,7 @@ class Autotask():
             '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
             '@xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
             '@xmlns:soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-            'soap:Body': {},
-            **integration_headers
+            'soap:Body': {}
         }
     }
 
@@ -107,7 +106,7 @@ class Autotask():
         entity: str,
         update_object: Dict[str, str],
         select_fields: Tuple[str, ...] = ()
-    ) -> Tuple(Union[Dict, str], int):
+    ) -> Tuple[Union[Dict, str], int]:
 
         procedure = {
             'create': {
