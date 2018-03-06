@@ -77,7 +77,7 @@ class Autotask():
     ) -> Tuple[Union[Dict, str], int]:
 
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        file_path = os.path.abspath(os.path.join(current_dir, 'xml/query.xml'))
+        file_path = os.path.abspath(os.path.join(current_dir, 'templates/query.xml'))
         with open(file_path, 'r') as xml_file:
             xml_template = xml_file.read()
 
@@ -97,6 +97,43 @@ class Autotask():
             response_body=xmltodict.parse(body),
             select_fields=select_fields if select_fields else ENTITY_DEFAULT_FIELDS[entity],
             mode='query'
+        )
+
+        return entity, status_code
+
+    def create(
+        self,
+        entity: str,
+        update_object: Dict[str, str],
+        select_fields: Tuple[str, ...] = ()
+    ) -> Tuple(Union[Dict, str], int):
+
+        procedure = {
+            'create': {
+                '@xmlns': 'http://autotask.net/ATWS/v1_5/',
+                'Entities': {
+                    'Entity': {
+                        '@xsi:type': entity,
+                        **update_object
+                    }
+                }
+            }
+        }
+
+        create_procedure = self.base_xml_template.copy()
+        create_procedure['soap:Envelope']['soap:Body'] = procedure
+
+        data = xmltodict.unparse(create_procedure)
+
+        status_code, body = self._request(data)
+
+        if status_code != status.HTTP_200_OK:
+            return body, status_code
+
+        entity = self.extract_response_from_keys(
+            response_body=xmltodict.parse(body),
+            select_fields=select_fields if select_fields else ENTITY_DEFAULT_FIELDS,
+            mode='create'
         )
 
         return entity, status_code
@@ -143,7 +180,7 @@ class Autotask():
             mode='update'
         )
 
-        return entity
+        return entity, status_code
 
     def get_zone_info(self) -> Tuple[Union[OrderedDict, str], int]:
         procedure = {
